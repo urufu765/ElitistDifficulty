@@ -13,9 +13,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\RWMods\\ElitistDifficulty\\TemplateMod.csproj",
-      "projectName": "TemplateMod",
-      "projectPath": "d:\\RWMods\\ElitistDifficulty\\TemplateMod.csproj",
+      "projectUniqueName": "d:\\RWMods\\ElitistDifficulty\\ElitistDifficulty.csproj",
+      "projectName": "ElitistDifficulty",
+      "projectPath": "d:\\RWMods\\ElitistDifficulty\\ElitistDifficulty.csproj",
       "packagesPath": "C:\\Users\\ninet\\.nuget\\packages\\",
       "outputPath": "d:\\RWMods\\ElitistDifficulty\\obj\\",
       "projectStyle": "PackageReference",

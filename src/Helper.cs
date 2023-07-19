@@ -79,7 +79,7 @@ public static class Helper
             string toSend = $"-> Elitist [{callerName}]: {message}";
             Debug.LogError(toSend);
             Debug.LogException(exception);
-            if (Plugin.patch_Guardian)
+            if (Plugin.Patch_Guardian)
             {
                 Throw_Exception_At_Vigaro(new Exception(toSend, exception));
             }
@@ -134,7 +134,7 @@ public static class Helper
                 string toSend = $"-> Elitist [{callerName}|{self.playerState.playerNumber}]: {message}";
                 Debug.LogError(toSend);
                 Debug.LogException(exception);
-                if (Plugin.patch_Guardian)
+                if (Plugin.Patch_Guardian)
                 {
                     Throw_Exception_At_Vigaro(new Exception(toSend, exception));
                 }
@@ -150,5 +150,35 @@ public static class Helper
     private static void Throw_Exception_At_Vigaro(Exception exception)
     {
         UploadException(exception);
+    }
+
+    public class Difficulty : ExtEnum<Difficulty>
+    {
+        public static readonly Difficulty Hard = new("Elitist_Difficulty_Vanilla");
+        public static readonly Difficulty Elite = new("Elitist_Difficulty_Elite");
+        public static readonly Difficulty Madland = new("Elitist_Difficulty_Madland");
+
+        public Difficulty(string value, bool register = true) : base(value, register)
+        {
+        }
+    }
+
+    public class EliteSave : DeathPersistentSaveData.Tutorial
+    {
+        public static readonly EliteSave DunkKarma = new("Elitist_Throw_Karma_Away");
+
+        public EliteSave(string value, bool register = true) : base(value, register)
+        {
+        }
+    }
+
+    public static string Swapper(this string text, params string[] with)
+    {
+        text = text.Replace("<LINE>", System.Environment.NewLine);
+        for (int i = 0; i < with.Length; i++)
+        {
+            text = text.Replace($"<REPLACE{i}>", RWCustom.Custom.rainWorld.inGameTranslator.Translate(with[i]));
+        }
+        return text;
     }
 }

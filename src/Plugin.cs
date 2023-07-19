@@ -25,8 +25,8 @@ public class Plugin : BaseUnityPlugin
     public EliteConfig config;
     public const string MOD_ID = "urufudoggo.elitist";
 
-    public static bool patch_Guardian;
-
+    public static bool Patch_Guardian {get; private set;}
+    public static bool Patch_MSC {get; private set;}
 
     public void OnEnable()
     {
@@ -40,8 +40,33 @@ public class Plugin : BaseUnityPlugin
             L(e, "Unable to instantiate plugin");
         }
         On.RainWorld.OnModsInit += LoadTheFrigginLoad;
+        On.RainWorld.PostModsInit += CheckTheModPatches;
         L("Done");
     }
+
+    private void CheckTheModPatches(On.RainWorld.orig_PostModsInit orig, RainWorld self)
+    {
+        L("Start");
+        try
+        {
+            if (ModManager.ActiveMods.Exists(mod => mod.id == "vigaro.guardian"))
+            {
+                L("Found Guardian! Applying patch...");
+                Patch_Guardian = true;
+            }
+            if (ModManager.MSC)
+            {
+                L("Found MoreSlugcats! Applying patch...");
+                Patch_MSC = true;
+            }
+        }
+        catch (Exception e)
+        {
+            L(e, "Couldn't patch mods!");
+        }
+        L("End");
+    }
+
 
     private void LoadTheFrigginLoad(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {

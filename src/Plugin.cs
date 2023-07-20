@@ -46,6 +46,7 @@ public class Plugin : BaseUnityPlugin
 
     private void CheckTheModPatches(On.RainWorld.orig_PostModsInit orig, RainWorld self)
     {
+        orig(self);
         L("Start");
         try
         {
@@ -70,6 +71,7 @@ public class Plugin : BaseUnityPlugin
 
     private void LoadTheFrigginLoad(On.RainWorld.orig_OnModsInit orig, RainWorld self)
     {
+        orig(self);
         L("Start");
         try
         {

@@ -174,7 +174,7 @@ public static class Helper
 
     public static string Swapper(this string text, params string[] with)
     {
-        text = text.Replace("<LINE>", System.Environment.NewLine);
+        text = RWCustom.Custom.rainWorld.inGameTranslator.Translate(text).Replace("<LINE>", System.Environment.NewLine);
         for (int i = 0; i < with.Length; i++)
         {
             text = text.Replace($"<REPLACE{i}>", RWCustom.Custom.rainWorld.inGameTranslator.Translate(with[i]));

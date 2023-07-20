@@ -4,21 +4,32 @@ using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
 using UnityEngine;
 using static EliteHelper.Helper;
+using static ElitistDiff.Buttons;
 
 namespace ElitistDiff;
 
-public class EliteConfig : OptionInterface
+public partial class EliteConfig : OptionInterface
 {
     public Configurable<Difficulty> cfgDifficulty;
     public Configurable<int> cfgLogImportance;
-    public UIelement[] difficultySet, accessibilitySet, miscSet;
-    public OpSimpleButton btnHard, btnElite, btnMadland;
-    public OpLabel lblHard, lblElite, lblMadland;
+    public UIelement[] difficultySet, hardDiffSet, eliteDiffSet, madDiffSet, customDiffSet, accessibilitySet, miscSet;
+    public OpSimpleButton btnHard, btnElite, btnMadland, btnCustom;
+    public OpLabelLong lblHard, lblElite, lblMadland;
+    public OpLabel lblPlaceholder, lblPlaceholder2;
+    public OpTab difficultyTab, accessibilityTab, miscTab;
+    public string strHard, strElite, strMadland, strCustom;
+    public string[] hardStrings, eliteStrings, madlandStrings;
     private readonly float yoffset = 560f;
     private readonly float xoffset = 30f;
     private readonly float ypadding = 40f;
     private readonly float xpadding = 35f;
-    public readonly Color hardColor, eliteColor, madlandColor;
+    public Color hardColor, eliteColor, madlandColor, customColor, hardDeselectedColor, eliteDeselectedColor, madlandDeselectedColor, customSelectedColor;
+    public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteFatigue;
+    public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteFatigue;
+    //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madKarmaDrain, madMaxFood;
+    //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadKarmaDrain, chkMadMaxFood;
+    //public Configurable<bool> customNoStop, customNoMiss;
+    private bool inited;
 
 
     public EliteConfig()
@@ -27,8 +38,35 @@ public class EliteConfig : OptionInterface
         cfgLogImportance = config.Bind("elitecfg_Log_Importance_Settings", 0, new ConfigAcceptableRange<int>(-1, 4));
         cfgLogImportance.OnChange += SetLogImportance;
         hardColor = new Color(0.9f, 0.9f, 0.9f);
+        hardDeselectedColor = new Color(0.3f, 0.3f, 0.3f);
         eliteColor = new Color(0.9f, 0.7f, 0.2f);
+        eliteDeselectedColor = new Color(0.4f, 0.27f, 0.1f);
         madlandColor = new Color(1f, 0.25f, 0.2f);
+        madlandDeselectedColor = new Color(0.5f, 0.1f, 0.1f);
+        customColor = new Color(0f, 0.7f, 0.8f);
+        customSelectedColor = new Color(0f, 0.3f, 0.4f);
+        strHard = "Your regular Rain World experience";
+        strElite = "Rain World tuned to be more brutal and unforgiving";
+        //strMadland = "The painful experience taken to the extreme";
+        strMadland = "Coming Soon...";
+        //strCustom = "Customize your Rain World happy meal";
+        strCustom = "Coming Soon...";
+
+        eliteFallKill = config.Bind("elitecfg_elite_fallskill", false);
+        eliteFailEscape = config.Bind("elitecfg_elite_killonescapefail", false);
+        eliteElectroKill = config.Bind("elitecfg_elite_electricitykill", false);
+        eliteFatigue = config.Bind("elitecfg_elite_fatigue", false);
+
+        /*
+        madFatigue = config.Bind("elitecfg_madland_fatigue", false);
+        madBombWeak = config.Bind("elitecfg_madland_bombweakness", false);
+        madHalfCycle = config.Bind("elitecfg_madland_fastcycle", false);
+        madKarmaDrain = config.Bind("elitecfg_madland_karmadownthedrain", false);
+        madMaxFood = config.Bind("elitecfg_madland_maxfoodorgohome", false);
+
+        customNoStop = config.Bind("elitecfg_custom_dontstopmoving", false);
+        customNoMiss = config.Bind("elitecfg_custom_hitallspears", false);
+        */
     }
 
     private void SetLogImportance()
@@ -39,30 +77,71 @@ public class EliteConfig : OptionInterface
 
     public override void Initialize()
     {
-        string hardString = "- No changes to game.";
-        string eliteString = "- Hard falls kill<LINE>- Death on failed escape opportunity<LINE>- Electric shocks kill<LINE>- Weaker to explosions<LINE>- Become fatigued after being tired<REPLACE0>";
-        string madlandString = "<LINE>- Health depletes upon being attacked<LINE>- Karma resets to 1 on death (unless protected)<LINE>- Must always eat max food";
+        hardStrings = new string[]{"No change."};
+        eliteStrings = new string[]{"Hard falls kill", "Death on failed escape opportunity", "Electric shocks kill", "Fatigue builds up while you are tired"};
+        madlandStrings = new string[]{eliteStrings[0], eliteStrings[1], eliteStrings[2], "Become exhausted when tired", "Weaker to explosions", "Cycles last half as long", "Karma resets to 1 on death (unless protected)", "Must always hibernate with max food"};
         base.Initialize();
-        lblHard = new OpLabel(xoffset + (xpadding * 0), yoffset + (ypadding * 0), 
-            hardString.Swapper()
-        )
+
+        Label_Init();
+
+        Button_Init();
+
+        difficultyTab = new(this, Translate("Difficulty"));
+        accessibilityTab = new(this, Translate("Accessibility"));
+        miscTab = new(this, Translate("Miscellaneous"));
+        Tabs = new OpTab[]
         {
-            color = hardColor,
-            Hidden = true
+            difficultyTab,
+            accessibilityTab,
+            miscTab
         };
-        lblElite = new OpLabel(xoffset + (xpadding * 0), yoffset + (ypadding * 0), 
-            eliteString.Swapper(" for too long")
-        )
+
+        difficultySet = new UIelement[]
         {
-            color = eliteColor,
-            Hidden = true
+            btnHard,
+            btnElite,
+            btnMadland,
+            btnCustom
         };
-        lblMadland = new OpLabel(xoffset + (xpadding * 0), yoffset + (ypadding * 0), 
-            eliteString.Swapper("") + madlandString.Swapper()
-        )
+        customDiffSet = Checkbox_Init();
+        accessibilitySet = new UIelement[]
         {
-            color = madlandColor,
-            Hidden = true
+            lblPlaceholder
         };
+        miscSet = new UIelement[]
+        {
+            lblPlaceholder2
+        };
+
+
+        difficultyTab.AddItems(difficultySet);
+        difficultyTab.AddItems(lblHard, lblElite, lblMadland);
+        difficultyTab.AddItems(customDiffSet);
+        accessibilityTab.AddItems(accessibilitySet);
+        miscTab.AddItems(miscSet);
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        if (!inited)
+        {
+            switch (cfgDifficulty.Value)
+            {
+                case var x when x == Difficulty.Hard:
+                    this.Unset_Elite_Difficulty(true);
+                    this.Set_Hard_Difficulty(true);
+                    break;
+                case var x when x == Difficulty.Elite:
+                    this.Unset_Hard_Difficulty(true);
+                    this.Set_Elite_Difficulty(true);
+                    break;
+            }
+            inited = true;
+        }
+        // if (difficultyTab.isInactive && inited || !lblHard.myContainer.isVisible && !lblElite.myContainer.isVisible && !lblMadland.myContainer.isVisible)
+        // {
+        //     inited = false;
+        // }
     }
 }

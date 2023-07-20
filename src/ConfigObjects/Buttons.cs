@@ -11,28 +11,28 @@ public partial class EliteConfig
 {
     private void Button_Init()
     {
-        btnHard = new OpSimpleButton(new Vector2(xoffset + (xpadding * 0), yoffset - (ypadding * 0)), new Vector2(115, 35), Translate("Hard"))
+        btnHard = new OpSimpleButton(new Vector2(xoffset + (xpadding * 0), yoffset - (ypadding * 2)), new Vector2(115, 35), Translate("Hard"))
         {
             colorEdge = hardColor,
             colorFill = hardDeselectedColor,
             description = strHard
         };
         btnHard.OnClick += this.Button_Hard_Pressed;
-        btnElite = new OpSimpleButton(new Vector2(xoffset + (xpadding * 4), yoffset - (ypadding * 0)), new Vector2(115, 35), Translate("Elite"))
+        btnElite = new OpSimpleButton(new Vector2(xoffset + (xpadding * 4), yoffset - (ypadding * 2)), new Vector2(115, 35), Translate("Elite"))
         {
             colorEdge = eliteColor,
             colorFill = eliteDeselectedColor,
             description = strElite
         };
         btnElite.OnClick += this.Button_Elite_Pressed;
-        btnMadland = new OpSimpleButton(new Vector2(xoffset + (xpadding * 8), yoffset - (ypadding * 0)), new Vector2(115, 35), Translate("Madland"))
+        btnMadland = new OpSimpleButton(new Vector2(xoffset + (xpadding * 8), yoffset - (ypadding * 2)), new Vector2(115, 35), Translate("Madland"))
         {
             colorEdge = madlandColor,
             colorFill = madlandDeselectedColor,
             description = strMadland,
             greyedOut = true
         };
-        btnCustom = new OpSimpleButton(new Vector2(xoffset + (xpadding * 12), yoffset - (ypadding * 0)), new Vector2(115, 35), Translate("Custom"))
+        btnCustom = new OpSimpleButton(new Vector2(xoffset + (xpadding * 12), yoffset - (ypadding * 2)), new Vector2(115, 35), Translate("Custom"))
         {
             colorEdge = customColor,
             colorFill = customDeselectedColor,

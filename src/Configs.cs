@@ -16,7 +16,7 @@ public partial class EliteConfig : OptionInterface
     public UIelement[] difficultySet, hardDiffSet, eliteDiffSet, madDiffSet, customDiffSet, accessibilitySet, miscSet;
     public OpSimpleButton btnHard, btnElite, btnMadland, btnCustom;
     public OpLabelLong lblHard, lblElite, lblMadland;
-    public OpLabel lblPlaceholder, lblPlaceholder2;
+    public OpLabel lblPlaceholder;
     public OpTab difficultyTab, accessibilityTab, miscTab;
     public string strHard, strElite, strMadland, strCustom;
     public string[] hardStrings, eliteStrings, madlandStrings;
@@ -111,6 +111,8 @@ public partial class EliteConfig : OptionInterface
 
         difficultySet = new UIelement[]
         {
+            new OpLabel(xoffset + (xpadding * 0), yoffset - (ypadding * 0), "Difficulty".Swapper(), true),
+            new OpLabelLong(new(xoffset + (xpadding * 0), yoffset - (ypadding * 0)), new(500f, ypadding * 2), "Choose your difficulty.".Swapper()),
             btnHard,
             btnElite,
             btnMadland,
@@ -126,6 +128,8 @@ public partial class EliteConfig : OptionInterface
         };
         miscSet = new UIelement[]
         {
+            new OpLabel(xoffset + (xpadding * 0), yoffset - (ypadding * 0), "Miscellaneous".Swapper(), true),
+            new OpLabelLong(new(xoffset + (xpadding * 0), yoffset - (ypadding * 0)), new(500f, ypadding * 2), "Modify some stuff that may or may not have impact on the gameplay.".Swapper()),
             new OpLabel(xoffset + (xpadding * 8) + 7f, yoffset - (ypadding * 2) + tpadding, "Log To Console".Swapper()),
             new OpSliderTick(this.cfgLogImportance, new Vector2(xoffset + (xpadding * 0) + 7f, yoffset - (ypadding * 2)), 300 - (int)xpadding - 7)
             {

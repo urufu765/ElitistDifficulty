@@ -19,4 +19,13 @@ public static class ApplyViolence
         self.room?.AddObject(new CreatureSpasmer(self, true, stunDuration));
         self.Die();
     }
+
+    public static void DeathIfSavingThrowFail(this Player self)
+    {
+        if (self.dangerGraspTime > 30)
+        {
+            self.L("Death by not responding fast enough.", 1);
+            self.Die();
+        }
+    }
 }

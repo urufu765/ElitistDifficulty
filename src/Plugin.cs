@@ -20,7 +20,7 @@ using ElitistModules;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.2.0")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.3.0")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -148,6 +148,10 @@ public class Plugin : BaseUnityPlugin
     {
         orig(self, eu);
         self.Tick();
+        if (config.eliteFailEscape.Value && SlugpupCheck(self))
+        {
+            self.DeathIfSavingThrowFail();
+        }
     }
 
 

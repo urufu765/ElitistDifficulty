@@ -152,15 +152,12 @@ public static class Helper
         UploadException(exception);
     }
 
-    public class Difficulty : ExtEnum<Difficulty>
+    public record Difficulty
     {
-        public static readonly Difficulty Hard = new("Elitist_Difficulty_Vanilla");
-        public static readonly Difficulty Elite = new("Elitist_Difficulty_Elite");
-        public static readonly Difficulty Madland = new("Elitist_Difficulty_Madland");
-
-        public Difficulty(string value, bool register = true) : base(value, register)
-        {
-        }
+        public const int TRYHARD = 1984;
+        public const int ELITIST = 420;
+        public const int MADLAD = 666;
+        public const int CUSTOM = -1;
     }
 
     public class EliteSave : DeathPersistentSaveData.Tutorial

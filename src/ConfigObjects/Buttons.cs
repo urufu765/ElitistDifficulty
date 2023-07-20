@@ -35,7 +35,7 @@ public partial class EliteConfig
         btnCustom = new OpSimpleButton(new Vector2(xoffset + (xpadding * 12), yoffset - (ypadding * 0)), new Vector2(115, 35), Translate("Custom"))
         {
             colorEdge = customColor,
-            colorFill = customSelectedColor,
+            colorFill = customDeselectedColor,
             description = strCustom,
             greyedOut = true
         };
@@ -45,40 +45,49 @@ public partial class EliteConfig
 
 public static class Buttons
 {
+    public static void Revert_Button_Pressed(this EliteConfig self)
+    {
+        self.inited = false;
+    }
+
+
     public static void Button_Hard_Pressed(this EliteConfig self, UIfocusable _)
     {
         self.Unset_Elite_Difficulty();
         self.Set_Hard_Difficulty();
-        if (self.cfgDifficulty.Value != Difficulty.Hard && RWCustom.Custom.rainWorld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Continue_Game != null){
+        if (self.chkDifficulty.GetValueInt() is not Difficulty.TRYHARD && RWCustom.Custom.rainWorld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Continue_Game is not null){
             ConfigContainer.PlaySound(SoundID.MENU_Switch_Page_In, 0, 0.8f, 0.95f);
         }
-        self.cfgDifficulty.Value = Difficulty.Hard;
+        self.chkDifficulty.SetValueInt(Difficulty.TRYHARD);
     }
 
     public static void Button_Elite_Pressed(this EliteConfig self, UIfocusable _)
     {
         self.Unset_Hard_Difficulty();
         self.Set_Elite_Difficulty();
-        if (self.cfgDifficulty.Value != Difficulty.Elite && RWCustom.Custom.rainWorld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Continue_Game != null){
+        if (self.chkDifficulty.GetValueInt() is not Difficulty.ELITIST && RWCustom.Custom.rainWorld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Continue_Game is not null){
             ConfigContainer.PlaySound(SoundID.MENU_Switch_Page_In, 0, 0.8f, 0.7f);
         }
-        self.cfgDifficulty.Value = Difficulty.Elite;
+        self.chkDifficulty.SetValueInt(Difficulty.ELITIST);
     }
 
     public static void Set_Hard_Difficulty(this EliteConfig self, bool cosmetic = false)
     {
+        //self.btnHard.colorEdge = self.selectedColor;
         self.btnHard.colorFill = self.hardColor;
         self.lblHard.Show();
     }
 
     public static void Unset_Hard_Difficulty(this EliteConfig self, bool cosmetic = false)
     {
+        //self.btnHard.colorEdge = self.hardColor;
         self.btnHard.colorFill = self.hardDeselectedColor;
         self.lblHard.Hide();
     }
 
     public static void Set_Elite_Difficulty(this EliteConfig self, bool cosmetic = false)
     {
+        //self.btnElite.colorEdge = self.selectedColor;
         self.btnElite.colorFill = self.eliteColor;
         self.lblElite.Show();
         if (cosmetic) return;
@@ -90,6 +99,7 @@ public static class Buttons
 
     public static void Unset_Elite_Difficulty(this EliteConfig self, bool cosmetic = false)
     {
+        //self.btnElite.colorEdge = self.eliteColor;
         self.btnElite.colorFill = self.eliteDeselectedColor;
         self.lblElite.Hide();
         if (cosmetic) return;

@@ -1,3 +1,12 @@
 /.vscode
 /DO NOT READ ME AND STRUGGLE.txt
 .fake
+src/bin/Debug/net48/ElitistDifficulty.dll
+src/bin/Debug/net48/ElitistDifficulty.pdb
+src/obj/project.nuget.cache
+src/obj/Debug/net48/ElitistDifficulty.assets.cache
+src/obj/Debug/net48/ElitistDifficulty.dll
+src/obj/Debug/net48/ElitistDifficulty.GeneratedMSBuildEditorConfig.editorconfig
+src/obj/Debug/net48/ElitistDifficulty.pdb
+mod/plugins/ElitistDifficulty.dll
+src/obj/ElitistDifficulty.csproj.nuget.dgspec.json

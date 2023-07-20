@@ -18,7 +18,7 @@ using static EliteHelper.Helper;
 
 namespace ElitistDiff;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.0.1")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.0.3")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -42,6 +42,9 @@ public class Plugin : BaseUnityPlugin
         On.RainWorld.OnModsInit += LoadTheFrigginLoad;
         On.RainWorld.PostModsInit += CheckTheModPatches;
         L("Done");
+        L("Hooking into hook required hooking methods begin!");
+        
+        L("What was I doing again?");
     }
 
     private void CheckTheModPatches(On.RainWorld.orig_PostModsInit orig, RainWorld self)

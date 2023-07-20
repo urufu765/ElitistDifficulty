@@ -10,7 +10,8 @@ namespace ElitistDiff;
 
 public partial class EliteConfig : OptionInterface
 {
-    public Configurable<Difficulty> cfgDifficulty;
+    public OpDragger chkDifficulty;
+    public Configurable<int> cfgDifficulty;
     public Configurable<int> cfgLogImportance;
     public UIelement[] difficultySet, hardDiffSet, eliteDiffSet, madDiffSet, customDiffSet, accessibilitySet, miscSet;
     public OpSimpleButton btnHard, btnElite, btnMadland, btnCustom;
@@ -23,28 +24,29 @@ public partial class EliteConfig : OptionInterface
     private readonly float xoffset = 30f;
     private readonly float ypadding = 40f;
     private readonly float xpadding = 35f;
-    public Color hardColor, eliteColor, madlandColor, customColor, hardDeselectedColor, eliteDeselectedColor, madlandDeselectedColor, customSelectedColor;
+    public Color hardColor, eliteColor, madlandColor, customColor, selectedColor, hardDeselectedColor, eliteDeselectedColor, madlandDeselectedColor, customDeselectedColor;
     public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteFatigue;
     public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteFatigue;
     //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madKarmaDrain, madMaxFood;
     //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadKarmaDrain, chkMadMaxFood;
     //public Configurable<bool> customNoStop, customNoMiss;
-    private bool inited;
+    public bool inited;
 
 
     public EliteConfig()
     {
-        cfgDifficulty = config.Bind("elitecfg_Difficulty_Settings", Difficulty.Hard);
+        cfgDifficulty = config.Bind("elitecfg_Difficulty_Settings", Difficulty.TRYHARD);
         cfgLogImportance = config.Bind("elitecfg_Log_Importance_Settings", 0, new ConfigAcceptableRange<int>(-1, 4));
         cfgLogImportance.OnChange += SetLogImportance;
-        hardColor = new Color(0.9f, 0.9f, 0.9f);
-        hardDeselectedColor = new Color(0.3f, 0.3f, 0.3f);
+        selectedColor = Color.white;
+        hardColor = new Color(0.8f, 0.8f, 0.8f);
+        hardDeselectedColor = new Color(0.2f, 0.2f, 0.2f);
         eliteColor = new Color(0.9f, 0.7f, 0.2f);
-        eliteDeselectedColor = new Color(0.4f, 0.27f, 0.1f);
+        eliteDeselectedColor = new Color(0.35f, 0.2f, 0.14f);
         madlandColor = new Color(1f, 0.25f, 0.2f);
-        madlandDeselectedColor = new Color(0.5f, 0.1f, 0.1f);
+        madlandDeselectedColor = new Color(0.4f, 0.1f, 0.1f);
         customColor = new Color(0f, 0.7f, 0.8f);
-        customSelectedColor = new Color(0f, 0.3f, 0.4f);
+        customDeselectedColor = new Color(0f, 0.25f, 0.35f);
         strHard = "Your regular Rain World experience";
         strElite = "Rain World tuned to be more brutal and unforgiving";
         //strMadland = "The painful experience taken to the extreme";
@@ -86,6 +88,10 @@ public partial class EliteConfig : OptionInterface
 
         Button_Init();
 
+        chkDifficulty = new(cfgDifficulty, default, 0);
+        chkDifficulty.Hide();
+        chkDifficulty.OnDeactivate += this.Revert_Button_Pressed;
+
         difficultyTab = new(this, Translate("Difficulty"));
         accessibilityTab = new(this, Translate("Accessibility"));
         miscTab = new(this, Translate("Miscellaneous"));
@@ -115,7 +121,7 @@ public partial class EliteConfig : OptionInterface
 
 
         difficultyTab.AddItems(difficultySet);
-        difficultyTab.AddItems(lblHard, lblElite, lblMadland);
+        difficultyTab.AddItems(chkDifficulty, lblHard, lblElite, lblMadland);
         difficultyTab.AddItems(customDiffSet);
         accessibilityTab.AddItems(accessibilitySet);
         miscTab.AddItems(miscSet);
@@ -128,11 +134,11 @@ public partial class EliteConfig : OptionInterface
         {
             switch (cfgDifficulty.Value)
             {
-                case var x when x == Difficulty.Hard:
+                case Difficulty.TRYHARD:
                     this.Unset_Elite_Difficulty(true);
                     this.Set_Hard_Difficulty(true);
                     break;
-                case var x when x == Difficulty.Elite:
+                case Difficulty.ELITIST:
                     this.Unset_Hard_Difficulty(true);
                     this.Set_Elite_Difficulty(true);
                     break;

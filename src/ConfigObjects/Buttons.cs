@@ -5,7 +5,7 @@ using Menu.Remix.MixedUI;
 using static EliteHelper.Helper;
 using UnityEngine;
 
-namespace ElitistDiff;
+namespace ElitistDifficulty;
 
 public partial class EliteConfig
 {

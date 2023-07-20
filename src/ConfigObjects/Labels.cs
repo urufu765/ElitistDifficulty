@@ -2,7 +2,7 @@
 using EliteHelper;
 using Menu.Remix.MixedUI;
 
-namespace ElitistDiff;
+namespace ElitistDifficulty;
 
 public partial class EliteConfig
 {

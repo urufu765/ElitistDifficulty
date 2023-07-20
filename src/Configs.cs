@@ -4,9 +4,9 @@ using Menu.Remix.MixedUI;
 using Menu.Remix.MixedUI.ValueTypes;
 using UnityEngine;
 using static EliteHelper.Helper;
-using static ElitistDiff.Buttons;
+using static ElitistDifficulty.Buttons;
 
-namespace ElitistDiff;
+namespace ElitistDifficulty;
 
 public partial class EliteConfig : OptionInterface
 {
@@ -30,6 +30,7 @@ public partial class EliteConfig : OptionInterface
     //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madKarmaDrain, madMaxFood;
     //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadKarmaDrain, chkMadMaxFood;
     //public Configurable<bool> customNoStop, customNoMiss;
+    //public Configurable<bool> cfgMiscDontSparePups
     public bool inited;
 
 

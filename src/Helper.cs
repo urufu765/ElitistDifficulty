@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using ElitistDiff;
+using ElitistDifficulty;
 using UnityEngine;
 using static Guardian.CloudLogger;
 

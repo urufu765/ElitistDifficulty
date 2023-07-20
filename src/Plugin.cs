@@ -18,7 +18,7 @@ using static EliteHelper.Helper;
 
 namespace ElitistDiff;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.0.3")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.0.6")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;

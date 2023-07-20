@@ -20,7 +20,7 @@ public static class FallToDeath
         }
         if (self.Stunned && firstContact && speed > limit && extraConditions)
         {
-            L("Death by fall!");
+            self.L("Death by fall!", 1);
             self.Die();
         }
     }

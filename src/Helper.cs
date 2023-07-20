@@ -88,7 +88,7 @@ public static class Helper
 
     public static void L(this Player self, string message, int logPrio = 3, bool ignoreRepeats = false, [CallerMemberName] string callerName = "")
     {
-        if (self is null)
+        if (self?.playerState is null)
         {
             L(message, logPrio, ignoreRepeats, callerName);
             return;
@@ -101,7 +101,14 @@ public static class Helper
                 {
                     if (logRepeats[self.playerState.playerNumber] > 0)
                     {
-                        Debug.Log($"-> Elitist [{callerName}|{self.playerState.playerNumber}]: Previous message repeated {logRepeats[self.playerState.playerNumber]} times: {prevLogs[self.playerState.playerNumber]}");
+                        if(self.playerState.slugcatCharacter is not null)
+                        {
+                            Debug.Log($"-> Elitist [{callerName}|{self.playerState.playerNumber}|{self.playerState.slugcatCharacter.value}]: Previous message repeated {logRepeats[self.playerState.playerNumber]} times: {prevLogs[self.playerState.playerNumber]}");
+                        }
+                        else
+                        {
+                            Debug.Log($"-> Elitist [{callerName}|{self.playerState.playerNumber}]: Previous message repeated {logRepeats[self.playerState.playerNumber]} times: {prevLogs[self.playerState.playerNumber]}");
+                        }
                     }
                     prevLogs[self.playerState.playerNumber] = message;
                     logRepeat = 0;
@@ -122,7 +129,7 @@ public static class Helper
 
     public static void L(this Player self, Exception exception, string message = "Caught error!", int logPrio = 0, [CallerMemberName] string callerName = "")
     {
-        if (self is null)
+        if (self?.playerState is null)
         {
             L(exception, message, logPrio, callerName);
             return;
@@ -132,6 +139,10 @@ public static class Helper
             if (logPrio <= logImportance)
             {
                 string toSend = $"-> Elitist [{callerName}|{self.playerState.playerNumber}]: {message}";
+                if (self.playerState.slugcatCharacter is not null)
+                {
+                    toSend = $"-> Elitist [{callerName}|{self.playerState.playerNumber}|{self.playerState.slugcatCharacter.value}]: {message}";
+                }
                 Debug.LogError(toSend);
                 Debug.LogException(exception);
                 if (Plugin.Patch_Guardian)

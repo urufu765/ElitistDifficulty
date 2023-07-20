@@ -16,6 +16,11 @@ public static class Clock
             FallImmunity--;
         }
 
+        if (player.GetCat().readyForShock > 0)
+        {
+            player.GetCat().readyForShock--;
+        }
+
         try
         {
             if (player?.room?.world?.region is not null)
@@ -29,7 +34,7 @@ public static class Clock
         }
         catch (Exception ex)
         {
-            L(ex, "Couldn't check if player changed regions");
+            player.L(ex, "Couldn't check if player changed regions");
         }
     }
 }

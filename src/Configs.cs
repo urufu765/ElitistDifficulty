@@ -24,13 +24,15 @@ public partial class EliteConfig : OptionInterface
     private readonly float xoffset = 30f;
     private readonly float ypadding = 40f;
     private readonly float xpadding = 35f;
+    private readonly float tpadding = 6f;
     public Color hardColor, eliteColor, madlandColor, customColor, selectedColor, hardDeselectedColor, eliteDeselectedColor, madlandDeselectedColor, customDeselectedColor;
     public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteFatigue;
     public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteFatigue;
     //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madKarmaDrain, madMaxFood;
     //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadKarmaDrain, chkMadMaxFood;
     //public Configurable<bool> customNoStop, customNoMiss;
-    //public Configurable<bool> cfgMiscDontSparePups
+    public Configurable<bool> cfgMiscDontSparePups;
+    public OpCheckBox chkMiscDontSparePups;
     public bool inited;
 
 
@@ -48,11 +50,11 @@ public partial class EliteConfig : OptionInterface
         madlandDeselectedColor = new Color(0.4f, 0.1f, 0.1f);
         customColor = new Color(0f, 0.7f, 0.8f);
         customDeselectedColor = new Color(0f, 0.25f, 0.35f);
-        strHard = "Your regular Rain World experience";
-        strElite = "Rain World tuned to be more brutal and unforgiving";
-        //strMadland = "The painful experience taken to the extreme";
+        strHard = "Your regular Rain World experience.";
+        strElite = "Rain World tuned to be a little bit more unforgiving.";
+        //strMadland = "The brutal experience taken to the extreme.";
         strMadland = "Coming Soon...";
-        //strCustom = "Customize your Rain World happy meal";
+        //strCustom = "Customize your Rain World happy meal.";
         strCustom = "Coming Soon...";
 
         eliteFallKill = config.Bind("elitecfg_elite_fallskill", false);
@@ -70,6 +72,8 @@ public partial class EliteConfig : OptionInterface
         customNoStop = config.Bind("elitecfg_custom_dontstopmoving", false);
         customNoMiss = config.Bind("elitecfg_custom_hitallspears", false);
         */
+
+        cfgMiscDontSparePups = config.Bind("elitecfg_Dont_Spare_Slugpups", false);
     }
 
     private void SetLogImportance()
@@ -88,6 +92,8 @@ public partial class EliteConfig : OptionInterface
         Label_Init();
 
         Button_Init();
+
+        Checkbox_Init();
 
         chkDifficulty = new(cfgDifficulty, default, 0);
         chkDifficulty.Hide();
@@ -110,14 +116,26 @@ public partial class EliteConfig : OptionInterface
             btnMadland,
             btnCustom
         };
-        customDiffSet = Checkbox_Init();
+        customDiffSet = new UIelement[]
+        {
+            chkEliteElectroKill, chkEliteFailEscape, chkEliteFallKill, chkEliteFatigue
+        };
         accessibilitySet = new UIelement[]
         {
             lblPlaceholder
         };
         miscSet = new UIelement[]
         {
-            lblPlaceholder2
+            new OpLabel(xoffset + (xpadding * 8) + 7f, yoffset - (ypadding * 2) + tpadding, "Log To Console".Swapper()),
+            new OpSliderTick(this.cfgLogImportance, new Vector2(xoffset + (xpadding * 0) + 7f, yoffset - (ypadding * 2)), 300 - (int)xpadding - 7)
+            {
+                min = -1,
+                max = 4,
+                description = "Controls what are allowed to be sent to the logs. -1 supresses all devlogs, even errors.".Swapper()
+            },
+
+            new OpLabel(xoffset + (xpadding * 1), yoffset - (ypadding * 3) + tpadding/2, "Don't Spare Slugpups".Swapper()),
+            chkMiscDontSparePups
         };
 
 

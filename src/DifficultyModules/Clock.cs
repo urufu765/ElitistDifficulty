@@ -44,7 +44,12 @@ public static class Clock
 
     public static void ManageFatigue(this Player self)
     {
-        self.GetCat().lacticAcid += Mathf.Lerp(0, 0.008f, Mathf.InverseLerp(0.85f, 1f, self.aerobicLevel));
-        self.GetCat().lacticAcid = Mathf.Max(0, self.GetCat().lacticAcid + Mathf.Lerp(-0.0002f, 0, Mathf.InverseLerp(0, 0.85f, self.aerobicLevel)));
+        if (self.dead) return;
+        self.GetCat().lacticAcid += self.Malnourished? Mathf.Lerp(0, 0.05f, Mathf.InverseLerp(0.85f, 1f, self.aerobicLevel)) : Mathf.Lerp(0, 0.01f, Mathf.InverseLerp(0.85f, 1f, self.aerobicLevel));
+        self.GetCat().lacticAcid = Mathf.Max(0, self.GetCat().lacticAcid + Mathf.Lerp(-0.00001f, 0, Mathf.InverseLerp(0, 0.6f, self.aerobicLevel)));
+        if (self.exhausted && UnityEngine.Random.value < self.GetCat().lacticAcid / 50)
+        {
+            self.Stun(40);
+        }
     }
 }

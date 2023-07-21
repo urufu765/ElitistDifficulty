@@ -7,6 +7,8 @@ The modules are separated into multiple classes to make them separateable (where
 ## Version 0: Development of Elitist difficulty
 * #### 0.4: Final 1.0 feature, fatigue buildup
     * An invisible value that builds up slowly and goes away slowly
+    * **0.4.1** Adjusted stun values and added a visual effect
+    * **0.4.2** Added more ways to get fatigue and stunning effect when tired.
 * #### 0.3: Death by failing saving throw
     * It's as simple as checking the dangergrasp time
 * #### 0.0 ~ 0.2: Before README

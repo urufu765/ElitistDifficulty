@@ -20,7 +20,7 @@ using ElitistModules;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.4.0")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.4.2")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -50,17 +50,28 @@ public class Plugin : BaseUnityPlugin
         On.Creature.Violence += DeathByManyThings;
         On.Centipede.Shock += SmallCentiKillPlayer;
         On.JellyFish.Update += ShockThePlayer;
-        On.Player.Stun += ShockThePlayerSequel;
+        On.Player.Stun += StunThePlayer;
         On.Player.AerobicIncrease += CausePlayerToFall;
+        On.PlayerGraphics.Update += BreatheHeavily;
         L("What was I doing again?");
     }
+
+    private void BreatheHeavily(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
+    {
+        orig(self);
+        if (config.eliteFatigue.Value)
+        {
+            self.VisualizeFatigue();
+        }
+    }
+
 
     private void CausePlayerToFall(On.Player.orig_AerobicIncrease orig, Player self, float f)
     {
         orig(self, f);
         if (config.eliteFatigue.Value && SlugpupCheck(self))
         {
-            self.SendPlayerDown();
+            self.SendPlayerDown(f);
         }
     }
 
@@ -68,13 +79,17 @@ public class Plugin : BaseUnityPlugin
     /// <summary>
     /// Applies death when player is shocked by jellyfish
     /// </summary>
-    private void ShockThePlayerSequel(On.Player.orig_Stun orig, Player self, int st)
+    private void StunThePlayer(On.Player.orig_Stun orig, Player self, int st)
     {
         orig(self, st);
         if (config.eliteElectroKill.Value && SlugpupCheck(self) && self.GetCat().readyForShock > 0)
         {
             self.DeathByShock(st);
             self.GetCat().readyForShock = 0;
+        }
+        if (config.eliteFatigue.Value && SlugpupCheck(self))
+        {
+            self.SendPlayerDownForTheCount();
         }
     }
 

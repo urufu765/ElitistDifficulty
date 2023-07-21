@@ -20,7 +20,7 @@ using ElitistModules;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.3.0")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.4.0")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -51,8 +51,19 @@ public class Plugin : BaseUnityPlugin
         On.Centipede.Shock += SmallCentiKillPlayer;
         On.JellyFish.Update += ShockThePlayer;
         On.Player.Stun += ShockThePlayerSequel;
+        On.Player.AerobicIncrease += CausePlayerToFall;
         L("What was I doing again?");
     }
+
+    private void CausePlayerToFall(On.Player.orig_AerobicIncrease orig, Player self, float f)
+    {
+        orig(self, f);
+        if (config.eliteFatigue.Value && SlugpupCheck(self))
+        {
+            self.SendPlayerDown();
+        }
+    }
+
 
     /// <summary>
     /// Applies death when player is shocked by jellyfish
@@ -147,11 +158,13 @@ public class Plugin : BaseUnityPlugin
     private void Clocks(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
-        self.Tick();
+        self.FallImmunityTick();
+        self.TickShocker();
         if (config.eliteFailEscape.Value && SlugpupCheck(self))
         {
             self.DeathIfSavingThrowFail();
         }
+        self.ManageFatigue();
     }
 
 

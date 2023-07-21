@@ -1,6 +1,7 @@
 ﻿using System;
 using static EliteHelper.Helper;
 using ElitistDifficulty;
+using UnityEngine;
 
 namespace ElitistModules;
 
@@ -9,32 +10,41 @@ public static class Clock
     public static int FallImmunity {get; private set;} = 0;
     public static string LastRegion {get; private set;} = "";
 
-    public static void Tick(this Player player)
+    public static void FallImmunityTick(this Player self)
     {
         if (FallImmunity > 0)
         {
             FallImmunity--;
         }
 
-        if (player.GetCat().readyForShock > 0)
-        {
-            player.GetCat().readyForShock--;
-        }
-
         try
         {
-            if (player?.room?.world?.region is not null)
+            if (self?.room?.world?.region is not null)
             {
-                if (player.room.world.region.name != LastRegion)
+                if (self.room.world.region.name != LastRegion)
                 {
-                    LastRegion = player.room.world.region.name;
+                    LastRegion = self.room.world.region.name;
                     FallImmunity = 400;
                 }
             }
         }
         catch (Exception ex)
         {
-            player.L(ex, "Couldn't check if player changed regions");
+            self.L(ex, "Couldn't check if player changed regions");
         }
+    }
+
+    public static void TickShocker(this Player self)
+    {
+        if (self.GetCat().readyForShock > 0)
+        {
+            self.GetCat().readyForShock--;
+        }
+    }
+
+    public static void ManageFatigue(this Player self)
+    {
+        self.GetCat().lacticAcid += Mathf.Lerp(0, 0.008f, Mathf.InverseLerp(0.85f, 1f, self.aerobicLevel));
+        self.GetCat().lacticAcid = Mathf.Max(0, self.GetCat().lacticAcid + Mathf.Lerp(-0.0002f, 0, Mathf.InverseLerp(0, 0.85f, self.aerobicLevel)));
     }
 }

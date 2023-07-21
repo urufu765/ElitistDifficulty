@@ -10,10 +10,12 @@ public static class PlayerCWT
     {
         // Define your variables to store here!
         public int readyForShock;
+        public float lacticAcid;
 
         public AnSlugcat(){
             // Initialize your variables here! (Anything not added here will be null or false or 0 (default values))
             readyForShock = 0;
+            lacticAcid = 0;
         }
     }
 

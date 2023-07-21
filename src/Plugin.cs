@@ -20,7 +20,7 @@ using ElitistModules;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.4.2")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.4.3")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;

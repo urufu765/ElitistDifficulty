@@ -12,13 +12,16 @@ public static class FatigueMachine
     {
         if (!self.dead)
         {
-            self.GetCat().lacticAcid += acid / 10;
+            self.GetCat().lacticAcid += acid / (self.lungsExhausted? 50 : 100);
         }
-        if (self.GetCat().lacticAcid >= 1 && self.aerobicLevel > 2 - self.GetCat().lacticAcid)
+        if (!self.lungsExhausted && self.GetCat().lacticAcid >= 1 && self.aerobicLevel > 2 - self.GetCat().lacticAcid)
         {
-            self.exhausted = true;
-            self.Stun(80);
-            self.GetCat().lacticAcid = 0.85f;
+            self.lungsExhausted = true;
+            self.GetCat().lacticAcid += self.aerobicLevel;
+        }
+        else if (self.lungsExhausted && UnityEngine.Random.value < self.GetCat().lacticAcid / (100 / acid))
+        {
+            self.Stun((int)(100 * self.GetCat().lacticAcid));
         }
     }
 
@@ -42,9 +45,38 @@ public static class FatigueMachine
     public static void SendPlayerDownForTheCount(this Player self)
     {
         if (self.dead) return;
-        if (self.exhausted && self.GetCat().lacticAcid > 0.8f)
+        if (self.Stunned && self.GetCat().lacticAcid > 0.8f)
         {
             self.LoseAllGrasps();
         }
     }
+
+
+    public static void ManageFatigue(this Player self)
+    {
+        if (self.dead) return;
+        if (self.GetCat().lacticAcid < 1 && !self.lungsExhausted)
+        {
+            self.GetCat().lacticAcid += self.Malnourished? Mathf.Lerp(0, 0.005f, Mathf.InverseLerp(0.85f, 1f, self.aerobicLevel)) : Mathf.Lerp(0, 0.001f, Mathf.InverseLerp(0.85f, 1f, self.aerobicLevel));
+            self.GetCat().lacticAcid = Mathf.Max(0, self.GetCat().lacticAcid + Mathf.Lerp(-0.0005f, 0, Mathf.InverseLerp(0, 0.75f, self.aerobicLevel)));
+        }
+        else
+        {
+            self.GetCat().lacticAcid -= self.Stunned? 0.00125f : 0.00075f;
+        }
+        if (self.lungsExhausted)
+        {
+            self.airInLungs = Mathf.Min(self.airInLungs, Mathf.Max(0.2f, 1.25f - self.GetCat().lacticAcid));
+            if (UnityEngine.Random.value < self.GetCat().lacticAcid / 1000)
+            {
+                self.Stun((int)(100 * self.GetCat().lacticAcid));
+            }
+            self.exhausted = true;
+        }
+        // if (self.lungsExhausted && self.aerobicLevel < 0.4f)
+        // {
+        //     self.lungsExhausted = false;
+        // }
+    }
+
 }

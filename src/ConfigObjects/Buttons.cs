@@ -54,6 +54,7 @@ public static class Buttons
     public static void Button_Hard_Pressed(this EliteConfig self, UIfocusable _)
     {
         self.Unset_Elite_Difficulty();
+        self.Unset_Madland_Difficulty();
         self.Set_Hard_Difficulty();
         if (self.chkDifficulty.GetValueInt() is not Difficulty.TRYHARD && RWCustom.Custom.rainWorld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Continue_Game is not null){
             ConfigContainer.PlaySound(SoundID.MENU_Switch_Page_In, 0, 0.8f, 0.95f);
@@ -64,6 +65,7 @@ public static class Buttons
     public static void Button_Elite_Pressed(this EliteConfig self, UIfocusable _)
     {
         self.Unset_Hard_Difficulty();
+        self.Unset_Madland_Difficulty();
         self.Set_Elite_Difficulty();
         if (self.chkDifficulty.GetValueInt() is not Difficulty.ELITIST && RWCustom.Custom.rainWorld.processManager.currentMainLoop is Menu.ModdingMenu && SoundID.MENU_Continue_Game is not null){
             ConfigContainer.PlaySound(SoundID.MENU_Switch_Page_In, 0, 0.8f, 0.7f);
@@ -94,7 +96,7 @@ public static class Buttons
         self.chkEliteFallKill.SetValueBool(true);
         self.chkEliteFailEscape.SetValueBool(true);
         self.chkEliteElectroKill.SetValueBool(true);
-        self.chkEliteFatigue.SetValueBool(true);
+        self.chkEliteKarmaDrain.SetValueBool(true);
     }
 
     public static void Unset_Elite_Difficulty(this EliteConfig self, bool cosmetic = false)
@@ -106,6 +108,14 @@ public static class Buttons
         self.chkEliteFallKill.SetValueBool(false);
         self.chkEliteFailEscape.SetValueBool(false);
         self.chkEliteElectroKill.SetValueBool(false);
-        self.chkEliteFatigue.SetValueBool(false);
+        self.chkEliteKarmaDrain.SetValueBool(false);
+    }
+
+    public static void Unset_Madland_Difficulty(this EliteConfig self, bool cosmetic = false)
+    {
+        self.btnMadland.colorFill = self.madlandDeselectedColor;
+        self.lblMadland.Hide();
+        if (cosmetic) return;
+        self.chkMadFatigue.SetValueBool(false);
     }
 }

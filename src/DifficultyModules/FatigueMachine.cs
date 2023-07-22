@@ -38,7 +38,7 @@ public static class FatigueMachine
         {
             if (!self.player.dead && !self.player.Sleeping)
             {
-                self.breath += 1f / Mathf.Lerp(100f, 15f, Mathf.Pow(self.player.GetCat().lacticAcid, 1.5f));
+                self.breath += 1f / Mathf.Lerp(80f, 15f, Mathf.Pow(self.player.GetCat().lacticAcid, 1.5f));
             }
 
         }

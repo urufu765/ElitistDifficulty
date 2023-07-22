@@ -20,7 +20,7 @@ using ElitistModules;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.4.4")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.5.0")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -53,13 +53,30 @@ public class Plugin : BaseUnityPlugin
         On.Player.Stun += StunThePlayer;
         On.Player.AerobicIncrease += CausePlayerToFall;
         On.PlayerGraphics.Update += BreatheHeavily;
+        On.RainWorldGame.CommunicateWithUpcomingProcess += FlushKarmaDownTheDrain;
         L("What was I doing again?");
+    }
+
+    private void FlushKarmaDownTheDrain(On.RainWorldGame.orig_CommunicateWithUpcomingProcess orig, RainWorldGame self, MainLoopProcess nextProcess)
+    {
+        try
+        {
+            if (config.eliteKarmaDrain.Value && nextProcess is Menu.KarmaLadderScreen && nextProcess.ID == ProcessManager.ProcessID.DeathScreen && !self.GetStorySession.saveState.deathPersistentSaveData.reinforcedKarma)
+            {
+                self.GetStorySession.saveState.deathPersistentSaveData.karma = 0;
+            }
+        }
+        catch (Exception e)
+        {
+            L(e, "Oh no, couldn't flush the karma");
+        }
+        orig(self, nextProcess);
     }
 
     private void BreatheHeavily(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
     {
         orig(self);
-        if (config.eliteFatigue.Value)
+        if (config.madFatigue.Value)
         {
             self.VisualizeFatigue();
         }
@@ -69,7 +86,7 @@ public class Plugin : BaseUnityPlugin
     private void CausePlayerToFall(On.Player.orig_AerobicIncrease orig, Player self, float f)
     {
         orig(self, f);
-        if (config.eliteFatigue.Value && SlugpupCheck(self))
+        if (config.madFatigue.Value && SlugpupCheck(self))
         {
             self.SendPlayerDown(f);
         }
@@ -87,7 +104,7 @@ public class Plugin : BaseUnityPlugin
             self.DeathByShock(st);
             self.GetCat().readyForShock = 0;
         }
-        if (config.eliteFatigue.Value && SlugpupCheck(self))
+        if (config.madFatigue.Value && SlugpupCheck(self))
         {
             self.SendPlayerDownForTheCount();
         }

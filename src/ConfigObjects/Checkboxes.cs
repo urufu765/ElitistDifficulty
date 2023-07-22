@@ -14,8 +14,10 @@ public partial class EliteConfig
         chkEliteFailEscape.Hide();
         chkEliteFallKill = new(eliteFallKill, default);
         chkEliteFallKill.Hide();
-        chkEliteFatigue = new(eliteFatigue, default);
-        chkEliteFatigue.Hide();
+        chkEliteKarmaDrain = new(eliteKarmaDrain, default);
+        chkEliteKarmaDrain.Hide();
+        chkMadFatigue = new(madFatigue, default);
+        chkMadFatigue.Hide();
 
         chkMiscDontSparePups = new(cfgMiscDontSparePups, new(xoffset + (xpadding * 0), yoffset - (ypadding * 3)))
         {

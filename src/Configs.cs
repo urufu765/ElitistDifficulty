@@ -26,10 +26,10 @@ public partial class EliteConfig : OptionInterface
     private readonly float xpadding = 35f;
     private readonly float tpadding = 6f;
     public Color hardColor, eliteColor, madlandColor, customColor, selectedColor, hardDeselectedColor, eliteDeselectedColor, madlandDeselectedColor, customDeselectedColor;
-    public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteFatigue;
-    public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteFatigue;
-    //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madKarmaDrain, madMaxFood;
-    //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadKarmaDrain, chkMadMaxFood;
+    public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteKarmaDrain, madFatigue;
+    public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteKarmaDrain, chkMadFatigue;
+    //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madMaxFood;
+    //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadMaxFood;
     //public Configurable<bool> customNoStop, customNoMiss;
     public Configurable<bool> cfgMiscDontSparePups;
     public OpCheckBox chkMiscDontSparePups;
@@ -60,13 +60,12 @@ public partial class EliteConfig : OptionInterface
         eliteFallKill = config.Bind("elitecfg_elite_fallskill", false);
         eliteFailEscape = config.Bind("elitecfg_elite_killonescapefail", false);
         eliteElectroKill = config.Bind("elitecfg_elite_electricitykill", false);
-        eliteFatigue = config.Bind("elitecfg_elite_fatigue", false);
+        eliteKarmaDrain = config.Bind("elitecfg_elite_karmadownthedrain", false);
 
-        /*
         madFatigue = config.Bind("elitecfg_madland_fatigue", false);
+        /*
         madBombWeak = config.Bind("elitecfg_madland_bombweakness", false);
         madHalfCycle = config.Bind("elitecfg_madland_fastcycle", false);
-        madKarmaDrain = config.Bind("elitecfg_madland_karmadownthedrain", false);
         madMaxFood = config.Bind("elitecfg_madland_maxfoodorgohome", false);
 
         customNoStop = config.Bind("elitecfg_custom_dontstopmoving", false);
@@ -85,8 +84,8 @@ public partial class EliteConfig : OptionInterface
     public override void Initialize()
     {
         hardStrings = new string[]{"No change."};
-        eliteStrings = new string[]{"Hard falls kill", "Death on failed escape opportunity", "Electric shocks kill", "Fatigue builds up while you are tired"};
-        madlandStrings = new string[]{eliteStrings[0], eliteStrings[1], eliteStrings[2], "Become exhausted when tired", "Weaker to explosions", "Cycles last half as long", "Karma resets to 1 on death (unless protected)", "Must always hibernate with max food"};
+        eliteStrings = new string[]{"Hard falls kill", "Death on failed escape opportunity", "Electric shocks kill", "Karma resets to 1 on death (unless protected)"};
+        madlandStrings = new string[]{eliteStrings[0], eliteStrings[1], eliteStrings[2], eliteStrings[3], "Weaker to explosions", "Cycles last half as long", "Fatigue builds up while you are tired", "Must always hibernate with max food"};
         base.Initialize();
 
         Label_Init();
@@ -120,7 +119,7 @@ public partial class EliteConfig : OptionInterface
         };
         customDiffSet = new UIelement[]
         {
-            chkEliteElectroKill, chkEliteFailEscape, chkEliteFallKill, chkEliteFatigue
+            chkEliteElectroKill, chkEliteFailEscape, chkEliteFallKill, chkEliteKarmaDrain, chkMadFatigue
         };
         accessibilitySet = new UIelement[]
         {

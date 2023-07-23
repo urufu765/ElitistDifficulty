@@ -10,6 +10,7 @@ The modules are separated into multiple classes to make them separateable (where
     * **0.5.1** All complete!
     * **0.5.2** Cleanup and alpha testing
     * **0.5.3** Set default difficulty to Elite, ready for beta testing.
+    * **0.5.4** A headstart on one of the Madland challenges
 * #### 0.4: Final 1.0 feature, fatigue buildup
     * An invisible value that builds up slowly and goes away slowly
     * **0.4.1** Adjusted stun values and added a visual effect

@@ -11,11 +11,33 @@ public static class PlayerCWT
         // Define your variables to store here!
         public int readyForShock;
         public float lacticAcid;
+        public string dangerRoom;
+        public string currentRoom;
+        public int inDangerRoom;
 
         public AnSlugcat(){
             // Initialize your variables here! (Anything not added here will be null or false or 0 (default values))
             readyForShock = 0;
             lacticAcid = 0;
+            dangerRoom = "";
+            currentRoom = "";
+        }
+
+        public bool DangerRoom(Room room)
+        {
+            if (room.abstractRoom.name != currentRoom)
+            {
+                if (room.abstractRoom.name == dangerRoom)
+                {
+                    return true;
+                }
+                if (room is not null && room.exitAndDenIndex.Length > 1)
+                {
+                    dangerRoom = currentRoom;
+                    currentRoom = room.abstractRoom.name;
+                }
+            }
+            return false;
         }
     }
 

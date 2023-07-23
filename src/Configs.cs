@@ -128,7 +128,7 @@ public partial class EliteConfig : OptionInterface
         miscSet = new UIelement[]
         {
             new OpLabel(xoffset + (xpadding * 0), yoffset - (ypadding * 0), "Miscellaneous".Swapper(), true),
-            new OpLabelLong(new(xoffset + (xpadding * 0), yoffset - (ypadding * 0)), new(500f, ypadding * 2), "Modify some stuff that may or may not have impact on the gameplay.".Swapper()),
+            new OpLabelLong(new(xoffset + (xpadding * 0), yoffset - (ypadding * 2)), new(500f, ypadding * 2), "Modify some stuff that may or may not have impact on the gameplay.".Swapper()),
             new OpLabel(xoffset + (xpadding * 8) + 7f, yoffset - (ypadding * 2) + tpadding, "Log To Console".Swapper()),
             new OpSliderTick(this.cfgLogImportance, new Vector2(xoffset + (xpadding * 0) + 7f, yoffset - (ypadding * 2)), 300 - (int)xpadding - 7)
             {

@@ -26,8 +26,8 @@ public partial class EliteConfig : OptionInterface
     private readonly float xpadding = 35f;
     private readonly float tpadding = 6f;
     public Color hardColor, eliteColor, madlandColor, customColor, selectedColor, hardDeselectedColor, eliteDeselectedColor, madlandDeselectedColor, customDeselectedColor;
-    public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteKarmaDrain, madFatigue;
-    public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteKarmaDrain, chkMadFatigue;
+    public Configurable<bool> eliteFallKill, eliteFailEscape, eliteElectroKill, eliteKarmaDrain;
+    public OpCheckBox chkEliteFallKill, chkEliteFailEscape, chkEliteElectroKill, chkEliteKarmaDrain;
     //public Configurable<bool> madFatigue, madBombWeak, madHalfCycle, madMaxFood;
     //public OpCheckBox chkMadFatigue, chkMadBombWeak, chkMadHalfCycle, chkMadMaxFood;
     //public Configurable<bool> customNoStop, customNoMiss;
@@ -38,7 +38,7 @@ public partial class EliteConfig : OptionInterface
 
     public EliteConfig()
     {
-        cfgDifficulty = config.Bind("elitecfg_Difficulty_Settings", Difficulty.TRYHARD);
+        cfgDifficulty = config.Bind("elitecfg_Difficulty_Settings", Difficulty.ELITIST);
         cfgLogImportance = config.Bind("elitecfg_Log_Importance_Settings", 0, new ConfigAcceptableRange<int>(-1, 4));
         cfgLogImportance.OnChange += SetLogImportance;
         selectedColor = Color.white;
@@ -57,13 +57,13 @@ public partial class EliteConfig : OptionInterface
         //strCustom = "Customize your Rain World happy meal.";
         strCustom = "Coming Soon...";
 
-        eliteFallKill = config.Bind("elitecfg_elite_fallskill", false);
-        eliteFailEscape = config.Bind("elitecfg_elite_killonescapefail", false);
-        eliteElectroKill = config.Bind("elitecfg_elite_electricitykill", false);
-        eliteKarmaDrain = config.Bind("elitecfg_elite_karmadownthedrain", false);
+        eliteFallKill = config.Bind("elitecfg_elite_fallskill", true);
+        eliteFailEscape = config.Bind("elitecfg_elite_killonescapefail", true);
+        eliteElectroKill = config.Bind("elitecfg_elite_electricitykill", true);
+        eliteKarmaDrain = config.Bind("elitecfg_elite_karmadownthedrain", true);
 
-        madFatigue = config.Bind("elitecfg_madland_fatigue", false);
         /*
+        madFatigue = config.Bind("elitecfg_madland_fatigue", false);
         madBombWeak = config.Bind("elitecfg_madland_bombweakness", false);
         madHalfCycle = config.Bind("elitecfg_madland_fastcycle", false);
         madMaxFood = config.Bind("elitecfg_madland_maxfoodorgohome", false);
@@ -83,9 +83,9 @@ public partial class EliteConfig : OptionInterface
 
     public override void Initialize()
     {
-        hardStrings = new string[]{"No change."};
-        eliteStrings = new string[]{"Hard falls kill", "Death on failed escape opportunity", "Electric shocks kill", "Karma resets to 1 on death (unless protected)"};
-        madlandStrings = new string[]{eliteStrings[0], eliteStrings[1], eliteStrings[2], eliteStrings[3], "Weaker to explosions", "Cycles last half as long", "Fatigue builds up while you are tired", "Must always hibernate with max food"};
+        hardStrings = new string[]{"No change.", "Your default rainworld experience. It's exactly as if you turned off the mod or something! The option is here if you don't feel like being an elitist for a moment."};
+        eliteStrings = new string[]{"Hard falls kill", "Death on failed escape opportunity", "Electric shocks kill", "Karma resets to 1 on death (unless protected)", "Adds a little bit of difficulty to the game... as long as you pay attention. You will be punished hard for making any mistakes!"};
+        madlandStrings = new string[]{eliteStrings[0], eliteStrings[1], eliteStrings[2], eliteStrings[3], "Weaker to explosions", "Cycles last half as long", "Cannot backtrack", "No spear misses", "Unlike the Elite difficulty, the Madland difficulty doesn't hold back. Prepare for pain and suffering, because there will be lots of it."};
         base.Initialize();
 
         Label_Init();
@@ -119,7 +119,7 @@ public partial class EliteConfig : OptionInterface
         };
         customDiffSet = new UIelement[]
         {
-            chkEliteElectroKill, chkEliteFailEscape, chkEliteFallKill, chkEliteKarmaDrain, chkMadFatigue
+            chkEliteElectroKill, chkEliteFailEscape, chkEliteFallKill, chkEliteKarmaDrain
         };
         accessibilitySet = new UIelement[]
         {

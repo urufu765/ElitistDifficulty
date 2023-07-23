@@ -116,6 +116,5 @@ public static class Buttons
         self.btnMadland.colorFill = self.madlandDeselectedColor;
         self.lblMadland.Hide();
         if (cosmetic) return;
-        self.chkMadFatigue.SetValueBool(false);
     }
 }

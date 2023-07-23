@@ -22,7 +22,7 @@ using Mono.Cecil.Cil;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.5.2")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.5.3")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -119,7 +119,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-
+#if false
     private void BreatheHeavily(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
     {
         orig(self);
@@ -138,6 +138,7 @@ public class Plugin : BaseUnityPlugin
             self.SendPlayerDown(f);
         }
     }
+#endif
 
 
     /// <summary>
@@ -151,10 +152,10 @@ public class Plugin : BaseUnityPlugin
             self.DeathByShock(st);
             self.GetCat().readyForShock = 0;
         }
-        if (config.madFatigue.Value && SlugpupCheck(self))
-        {
-            self.SendPlayerDownForTheCount();
-        }
+        // if (config.madFatigue.Value && SlugpupCheck(self))
+        // {
+        //     self.SendPlayerDownForTheCount();
+        // }
     }
 
     /// <summary>
@@ -292,8 +293,8 @@ public class Plugin : BaseUnityPlugin
         On.Centipede.Shock += SmallCentiKillPlayer;
         On.JellyFish.Update += ShockThePlayer;
         On.Player.Stun += StunThePlayer;
-        On.Player.AerobicIncrease += CausePlayerToFall;
-        On.PlayerGraphics.Update += BreatheHeavily;
+        //On.Player.AerobicIncrease += CausePlayerToFall;
+        //On.PlayerGraphics.Update += BreatheHeavily;
         On.SaveState.SessionEnded += FlushKarmaDownTheDrainElegantly;
         try
         {

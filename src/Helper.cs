@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using BepInEx.Logging;
 using ElitistDifficulty;
 using UnityEngine;
 using static Guardian.CloudLogger;
@@ -9,6 +10,8 @@ namespace EliteHelper;
 
 public static class Helper
 {
+    public static ManualLogSource Logs {get; private set;} = new("Elitist");
+
     /// <summary>
     /// A simple list that expands upon having an index greater than the size
     /// </summary>
@@ -71,6 +74,27 @@ public static class Helper
         }
     }
 
+    public static void LL(string message, int logPrio = 3, bool ignoreRepeats = false, [CallerMemberName] string callerName = "")
+    {
+        if (logPrio <= logImportance)
+        {
+            if (message != prevLog || ignoreRepeats)
+            {
+                if (logRepeat > 0)
+                {
+                    Logs.LogDebug($"[{callerName}]: Previous message repeated {logRepeat} times: {prevLog}");
+                }
+                prevLog = message;
+                logRepeat = 0;
+                Logs.LogDebug($"[{callerName}]: {message}");
+            }
+            else
+            {
+                logRepeat++;
+            }
+        }
+    }
+
 
     public static void L(Exception exception, string message = "Caught error!", int logPrio = 0, [CallerMemberName] string callerName = "")
     {
@@ -79,6 +103,20 @@ public static class Helper
             string toSend = $"-> Elitist [{callerName}]: {message}";
             Debug.LogError(toSend);
             Debug.LogException(exception);
+            if (Plugin.Patch_Guardian)
+            {
+                Throw_Exception_At_Vigaro(new Exception(toSend, exception));
+            }
+        }
+    }
+
+    public static void LL(Exception exception, string message = "Caught error!", int logPrio = 0, [CallerMemberName] string callerName = "")
+    {
+        if (logPrio <= logImportance)
+        {
+            string toSend = $"[{callerName}]: {message}";
+            Logs.LogError(toSend);
+            Logs.LogError(exception);
             if (Plugin.Patch_Guardian)
             {
                 Throw_Exception_At_Vigaro(new Exception(toSend, exception));

@@ -11,6 +11,8 @@ using Debug = UnityEngine.Debug;
 using static EliteHelper.Helper;
 using static ElitistDifficulty.PlayerCWT;
 using ElitistModules;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
 
 #pragma warning disable CS0618
 
@@ -20,7 +22,7 @@ using ElitistModules;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.5.0")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.5.1")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;
@@ -30,48 +32,177 @@ public class Plugin : BaseUnityPlugin
     public static bool Patch_Guardian {get; private set;}
     public static bool Patch_MSC {get; private set;}
 
+    public static int deathKarma = -1;
+
     public void OnEnable()
     {
-        L("Start");
+        LL("Start");
         try
         {
             ins = this;
         }
         catch (Exception e)
         {
-            L(e, "Unable to instantiate plugin");
+            LL(e, "Unable to instantiate plugin");
         }
         On.RainWorld.OnModsInit += LoadTheFrigginLoad;
         On.RainWorld.PostModsInit += CheckTheModPatches;
-        L("Done");
-        L("Hooking into hook required hooking methods begin!");
-        On.Player.Update += Clocks;
-        On.Player.TerrainImpact += FallToDeath;
-        On.Creature.Violence += DeathByManyThings;
-        On.Centipede.Shock += SmallCentiKillPlayer;
-        On.JellyFish.Update += ShockThePlayer;
-        On.Player.Stun += StunThePlayer;
-        On.Player.AerobicIncrease += CausePlayerToFall;
-        On.PlayerGraphics.Update += BreatheHeavily;
-        On.RainWorldGame.CommunicateWithUpcomingProcess += FlushKarmaDownTheDrain;
-        L("What was I doing again?");
+        LL("Done");
     }
 
-    private void FlushKarmaDownTheDrain(On.RainWorldGame.orig_CommunicateWithUpcomingProcess orig, RainWorldGame self, MainLoopProcess nextProcess)
+    private void FlushKarmaDownTheDrain(ILContext il)
     {
+        var pineapple = new ILCursor(il);
         try
         {
-            if (config.eliteKarmaDrain.Value && nextProcess is Menu.KarmaLadderScreen && nextProcess.ID == ProcessManager.ProcessID.DeathScreen && !self.GetStorySession.saveState.deathPersistentSaveData.reinforcedKarma)
-            {
-                self.GetStorySession.saveState.deathPersistentSaveData.karma = 0;
-            }
+            pineapple.GotoNext(MoveType.After,
+                i => i.MatchLdloc(1),
+                i => i.MatchLdcI4(1),
+                i => i.MatchSub(),
+                i => i.MatchLdcI4(0),
+                i => i.MatchLdarg(0),
+                i => i.MatchCallOrCallvirt<RainWorldGame>("get_GetStorySession"),
+                i => i.MatchLdfld<StoryGameSession>(nameof(StoryGameSession.saveState)),
+                i => i.MatchLdfld<SaveState>(nameof(SaveState.deathPersistentSaveData)),
+                i => i.MatchLdfld<DeathPersistentSaveData>(nameof(DeathPersistentSaveData.karmaCap)),
+                i => i.MatchCallOrCallvirt("RWCustom.Custom", nameof(Custom.IntClamp))
+                //i => i.MatchStloc(out _)
+            );
+            L("Identified point of interest", 1, true);
         }
         catch (Exception e)
         {
-            L(e, "Oh no, couldn't flush the karma");
+            L(e, "IL failed when dragging cursor through the code!");
+            throw new Exception("Failure to match stuff!", e);
         }
-        orig(self, nextProcess);
+        //pointer.Emit(OpCodes.Ldarg, 0);
+
+        try
+        {
+            pineapple.EmitDelegate(
+                (int original) => {
+                    if (ins.config.eliteKarmaDrain.Value && deathKarma != -1) {
+                        L("Player got rekt", 1);
+                        return deathKarma;
+                    }
+                    return original;
+                }
+            );
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when flushing karma down the drain!");
+            throw new Exception("Failure to emite the delegate!", e);
+        }
     }
+
+    private void FlushKarmaDownTheDrainSupplementary(ILContext il)
+    {
+        var apple = new ILCursor(il);
+        try
+        {
+            apple.GotoNext(MoveType.After,
+                i => i.MatchLdarg(0),
+                i => i.MatchLdarg(1),
+                i => i.MatchLdflda<Menu.KarmaLadderScreen.SleepDeathScreenDataPackage>(nameof(Menu.KarmaLadderScreen.SleepDeathScreenDataPackage.karma)),
+                i => i.MatchLdfld<RWCustom.IntVector2>(nameof(RWCustom.IntVector2.x)),
+                i => i.MatchLdarg(0),
+                i => i.MatchLdfld<MainLoopProcess>(nameof(MainLoopProcess.ID)),
+                i => i.MatchLdsfld<ProcessManager.ProcessID>(nameof(ProcessManager.ProcessID.SleepScreen))
+                //i => i.MatchCallOrCallvirt("ExtEnum<ProcessManager.ProcessID>", "op_Equality"),
+                //i => i.MatchBrtrue(out _)
+            );
+            apple.GotoNext(MoveType.After,
+                i => i.MatchBrtrue(out _)
+            );
+            L("Identified point of interest", 1, true);
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when dragging cursor through the code!");
+            throw new Exception("Failure to match stuff!", e);
+        }
+
+        try
+        {
+            apple.Emit(OpCodes.Ldarg, 1);
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when attempting to inject code!");
+            throw new Exception("Failure to inject stuff!", e);
+        }
+
+        try
+        {
+            apple.EmitDelegate(
+                (int original, Menu.KarmaLadderScreen.SleepDeathScreenDataPackage package) => {
+                    if (ins.config.eliteKarmaDrain.Value) {
+                        L($"Player got abso rekt {package.karma.x}", 1);
+                        return -package.karma.x;
+                    }
+                    return original;
+                }
+            );
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when flushing karma down the drain!");
+            throw new Exception("Failure to emite the delegate!", e);
+        }
+
+    }
+
+    private void FlushKarmaDownVisually(ILContext il)
+    {
+        var pear = new ILCursor(il);
+        try
+        {
+            pear.GotoNext(MoveType.After,
+                i => i.MatchLdarg(0),
+                i => i.MatchLdfld<Menu.KarmaLadderScreen>(nameof(Menu.KarmaLadderScreen.karmaLadder)),
+                i => i.MatchLdarg(0),
+                i => i.MatchLdflda<Menu.KarmaLadderScreen>(nameof(Menu.KarmaLadderScreen.karma)),
+                i => i.MatchLdfld<RWCustom.IntVector2>(nameof(IntVector2.x)),
+                i => i.MatchLdcI4(1),
+                i => i.MatchSub()
+            );
+            L("Identified point of interest", 1, true);
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when dragging cursor through the code!");
+            throw new Exception("Failure to match stuff!", e);
+        }
+        try
+        {
+            pear.Emit(OpCodes.Ldarg, 0);
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when attempting to inject code!");
+            throw new Exception("Failure to inject stuff!", e);
+        }
+        try
+        {
+            pear.EmitDelegate(
+                (int original, Menu.SleepAndDeathScreen self) => {
+                    if (ins.config.eliteKarmaDrain.Value && !self.karmaLadder.reinforced) {
+                        L($"Player got abso rekt", 1);
+                        //deathKarma = -1;
+                        return 0;
+                    }
+                    return original;
+                }
+            );
+        }
+        catch (Exception e)
+        {
+            L(e, "IL failed when flushing karma down the drain!");
+            throw new Exception("Failure to emite the delegate!", e);
+        }
+    }
+
 
     private void BreatheHeavily(On.PlayerGraphics.orig_Update orig, PlayerGraphics self)
     {
@@ -238,7 +369,81 @@ public class Plugin : BaseUnityPlugin
         {
             L(e, "Configuration connection failed");
         }
+        L("Hooking into hook required hooking methods begin!");
+        On.Player.Update += Clocks;
+        On.Player.TerrainImpact += FallToDeath;
+        On.Creature.Violence += DeathByManyThings;
+        On.Centipede.Shock += SmallCentiKillPlayer;
+        On.JellyFish.Update += ShockThePlayer;
+        On.Player.Stun += StunThePlayer;
+        On.Player.AerobicIncrease += CausePlayerToFall;
+        On.PlayerGraphics.Update += BreatheHeavily;
+        On.RainWorldGame.CommunicateWithUpcomingProcess += RainWorldGame_CommunicateWithUpcomingProcess;
+        On.SaveState.SessionEnded += FlushKarmaDownTheDrainElegantly;
+        try
+        {
+            //IL.RainWorldGame.CommunicateWithUpcomingProcess += FlushKarmaDownTheDrain;
+            //IL.Menu.KarmaLadderScreen.GetDataFromGame += FlushKarmaDownTheDrainSupplementary;
+            IL.Menu.SleepAndDeathScreen.FoodCountDownDone += FlushKarmaDownVisually;
+        }
+        catch (Exception e)
+        {
+            L(e, "An IL hook failed!");
+        }
+        L("What was I doing again?");
         L("End");
     }
+
+    private void FlushKarmaDownTheDrainElegantly(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
+    {
+        int deathKarma = -1;
+        try
+        {
+            if (config.eliteKarmaDrain.Value && !survived && !self.deathPersistentSaveData.reinforcedKarma && game.IsStorySession)
+            {
+                L("Player got absolutely rekt", 1, true);
+                deathKarma = self.deathPersistentSaveData.karma;
+                self.deathPersistentSaveData.karma = 1;
+            }
+        }
+        catch (Exception e)
+        {
+            L(e, "Oh no, couldn't flush the karma");
+        }
+        orig(self, game, survived, newMalnourished);
+        if (deathKarma != -1) self.deathPersistentSaveData.karma = deathKarma;
+    }
+
+    /// <summary>
+    /// It works but an IL hook may allow the visual aspect to happen.
+    /// </summary>
+    private void RainWorldGame_CommunicateWithUpcomingProcess(On.RainWorldGame.orig_CommunicateWithUpcomingProcess orig, RainWorldGame self, MainLoopProcess nextProcess)
+    {
+        if (nextProcess is Menu.KarmaLadderScreen)
+        {
+            L($"{self.GetStorySession.saveState.deathPersistentSaveData.karma}");
+        }
+        orig(self, nextProcess);
+        if (nextProcess is Menu.KarmaLadderScreen)
+        {
+            L($"{self.GetStorySession.saveState.deathPersistentSaveData.karma}");
+        }
+        /*
+        try
+        {
+            if (config.eliteKarmaDrain.Value && nextProcess is Menu.KarmaLadderScreen && nextProcess.ID == ProcessManager.ProcessID.DeathScreen && !self.GetStorySession.saveState.deathPersistentSaveData.reinforcedKarma)
+            {
+                L("Player got absolutely rekt", 1);
+                self.GetStorySession.saveState.deathPersistentSaveData.karma = 0;
+                self.GetStorySession.saveState.progression.SaveWorldStateAndProgression(false);
+            }
+        }
+        catch (Exception e)
+        {
+            L(e, "Oh no, couldn't flush the karma");
+        }*/
+    }
+
+    
 
 }

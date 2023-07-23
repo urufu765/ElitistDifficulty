@@ -111,7 +111,7 @@ public partial class EliteConfig : OptionInterface
         difficultySet = new UIelement[]
         {
             new OpLabel(xoffset + (xpadding * 0), yoffset - (ypadding * 0), "Difficulty".Swapper(), true),
-            new OpLabelLong(new(xoffset + (xpadding * 0), yoffset - (ypadding * 0)), new(500f, ypadding * 2), "Choose your difficulty.".Swapper()),
+            new OpLabelLong(new(xoffset + (xpadding * 0), yoffset - (ypadding * 2)), new(500f, ypadding * 2), "Choose your difficulty.".Swapper()),
             btnHard,
             btnElite,
             btnMadland,

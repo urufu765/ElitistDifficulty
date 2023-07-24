@@ -22,7 +22,7 @@ using Mono.Cecil.Cil;
 
 namespace ElitistDifficulty;
 
-[BepInPlugin(MOD_ID, "Elitist Difficulty", "0.5.4")]
+[BepInPlugin(MOD_ID, "Elitist Difficulty", "1.0.0")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin ins;

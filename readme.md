@@ -4,6 +4,7 @@
 The modules are separated into multiple classes to make them separateable (where possible). Feel free to adapt the code for your own use.
 
 # Changelog
+## Version 1: Steam release!
 ## Version 0: Development of Elitist difficulty
 * #### 0.5: Replace fatigue buildup with karma drain
     * It was simply too mean.

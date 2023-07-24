@@ -1,0 +1,16 @@
+{
+  "Title": "Elitist Difficulty",
+  "Description": "A mod that provides extra difficulty on top of existing stuff for those who wish to make the game harder than it already is. There are multiple difficulties to choose from so check out the remix settings![i](more to come very soon)[/i]\r\n\r\nThe lovely thumbnail is by Matt Meowcer!",
+  "ID": "urufudoggo.elitist",
+  "Version": "1.0.0",
+  "TargetGameVersion": "",
+  "Requirements": "",
+  "RequirementNames": "",
+  "Authors": "Urufudoggo",
+  "Visibility": "Unlisted",
+  "Tags": [
+    "Game Mechanics"
+  ],
+  "WorkshopID": 3008970479,
+  "UploadFilesOnly": false
+}
